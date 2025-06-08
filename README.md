@@ -8,7 +8,7 @@ Automated support ticket triage for oil & gas operations. Classifies incoming ti
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.29+-red.svg)
 ![Tests](https://img.shields.io/badge/Tests-30%20Passing-brightgreen.svg)
 
-<!-- VIDEO_PLACEHOLDER -->
+https://github.com/user-attachments/assets/83e8f586-aaae-487d-998b-b29b00857b83
 
 ---
 
