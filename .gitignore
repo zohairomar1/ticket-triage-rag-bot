@@ -1,0 +1,23 @@
+# Environment
+.env
+.venv
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Cached embeddings (regenerate with python -m src.embeddings)
+data/embeddings.npy
+data/ticket_ids.json
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# pytest
+.pytest_cache/
