@@ -1,0 +1,902 @@
+[
+  {
+    "id": "TKT-001",
+    "title": "WHP sensor bouncing on F-11",
+    "description": "Wellhead pressure on 15/9-F-11 is jumping all over the place - reads 0 then maxes out then back to 0. Started around 0300 this morning. We can't trust the reading for barrier verification. Tried power cycling the transmitter, no change.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Swapped out the Rosemount 3051 transducer. Old one had moisture in the electronics housing. New readings stable, recalibrated to reference gauge.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-002",
+    "title": "ESP tripped overnight - F-1 C shut in",
+    "description": "Night shift found F-1 C ESP had tripped on overload. Well is shut in since ~0130. Motor current was trending high all yesterday per the VSD log. Downhole temp was 148C at last reading, above the 140C motor rating. Losing about 800 Sm3/d oil while this is down.",
+    "category": "equipment_failure",
+    "priority": "critical",
+    "resolution": "Circulated cool fluid for 4 hrs, restarted at 48Hz instead of 55Hz. Running but need to schedule pull and replacement -- motor windings are probably cooked. Ordered new 456 series motor.",
+    "wellbore": "15/9-F-1 C"
+  },
+  {
+    "id": "TKT-003",
+    "title": "GLV stuck closed @ 2200m on F-14",
+    "description": "Gas lift valve at 2200m on 15/9-F-14 won't open. Tried increasing casing pressure to 180 bar, no response. Well making about 40% of normal. Wireline might be needed.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Ran wireline, pulled and replaced the GLV. Dome charge had leaked. Back online at 95% of target within a day.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-004",
+    "title": "Choke trim worn out on F-15 D",
+    "description": "Bean on 15/9-F-15 D is washed out, can't hold a stable choke setting anymore. Getting sand traces in the test separator too. Probably related.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Changed to TC trim. Also installed sand probe downstream. Need to keep an eye on this -- if sand gets worse we'll need a gravel pack review.",
+    "wellbore": "15/9-F-15 D"
+  },
+  {
+    "id": "TKT-005",
+    "title": "HC leak at F-11 manifold flange",
+    "description": "Found a weep on the 6\" flange where F-11 flowline ties into the manifold during morning walkdown. Small drip, maybe 1 drop/sec. Isolated and reported per the leak procedure. Area barricaded.",
+    "category": "equipment_failure",
+    "priority": "critical",
+    "resolution": "Depressurized, broke flange, gasket was corroded through on one side. Replaced with new spiral wound gasket. Pressure tested to 1.5x MAOP, no leak. Back online.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-006",
+    "title": "Test sep LCV hunting",
+    "description": "Level control valve on test separator is cycling about every 30 seconds. Interface is all over the place. Can't get a clean well test right now.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Retuned the PID -- integral was way too aggressive. Also found the positioner feedback arm was loose. Fixed both, stable now.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-007",
+    "title": "PDG dead on F-1 B",
+    "description": "Permanent downhole gauge on 15/9-F-1 B flatlined. Last reading looked normal (285 bar, 95C) then just went to zero. Tried resetting from surface, nothing. We're blind on this well now for BHP.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Confirmed dead via wireline check. Will have to use periodic well tests for reservoir monitoring until next intervention. Not worth a dedicated trip just for the gauge.",
+    "wellbore": "15/9-F-1 B"
+  },
+  {
+    "id": "TKT-008",
+    "title": "Scale squeeze pump won't start - F-4",
+    "description": "Scale inhibitor pump for F-4 is dead. Tried the backup, also won't start (sat too long). We've got about 2-3 weeks before CaCO3 scaling becomes an issue based on the inhibitor residual tests.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Primary pump: seized impeller, replaced head and motor. Backup pump: motor capacitor blown, replaced. Both running now. Bumped injection rate up 20% for a week to make up for the gap.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-009",
+    "title": "Lost SCADA comms to F-12 wellpad",
+    "description": "RTU at 15/9-F-12 is offline since 1400 yesterday. Sent someone out -- all the local readings are fine, just can't talk to it from the control room. Can't remote operate anything on this well.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Cable splice about 200m from the RTU had corroded through (salt spray). Repaired and potted the joint properly this time. Comms back.",
+    "wellbore": "15/9-F-12"
+  },
+  {
+    "id": "TKT-010",
+    "title": "Flare pilot out -- can't relight",
+    "description": "Pilot went out in the wind last night. Auto-igniter fired 3 times per the log but didn't relight. We need someone up there to manually light it. Not an immediate safety issue since we're not routing any relief to it right now but we're non-compliant.",
+    "category": "equipment_failure",
+    "priority": "critical",
+    "resolution": "Manual relight done. Igniter spark gap was eroded, replaced the igniter. Also fitted a wind baffle that maintenance had been sitting on for months.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-011",
+    "title": "Crane slew bearing grinding noise",
+    "description": "Main crane making a grinding/clicking sound when slewing left. Gets worse under load. Greased it but still there. Might be the slew bearing race.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Inspection found 3 cracked rollers in the slew ring. Ordered replacement bearing, crane downrated to 50% capacity until replacement arrives in 10 days.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-012",
+    "title": "Glycol pump tripping on high temp",
+    "description": "TEG regen glycol circulation pump keeps tripping on high temperature. Shuts down after about 20 minutes of running. Cooling water flow to the heat exchanger looks normal.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Heat exchanger was fouled on the glycol side. Pulled and cleaned the bundle. Pump running fine now, glycol outlet temp back to 65C.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-013",
+    "title": "Hyd power unit low pressure alarm - XT F-15 D",
+    "description": "Subsea HPU for F-15 D XT keeps alarming on low accumulator pressure. Drops from 345 to 280 bar overnight. Been topping up every morning this week.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Hydraulic fluid top-up via umbilical. Monitoring daily. Suspect slow leak at the stab plate -- will need ROV inspection next weather window.",
+    "wellbore": "15/9-F-15 D"
+  },
+  {
+    "id": "TKT-014",
+    "title": "Corrosion coupon retrieval - coupons completely gone",
+    "description": "Went to pull the 6-month corrosion coupons from the F-4 flowline and they're basically dissolved. The holder is there but the coupons are paper thin. This is way worse than the last set.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Corrosion rate calculated at 4.2 mm/yr -- well above the 0.5 mm/yr limit. Increased CI dosage from 20 to 50 ppm. Scheduled UT survey on the flowline. May need to replace pipe sections.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-015",
+    "title": "Pig stuck in scraper trap",
+    "description": "Foam pig sent through the F-14 pipeline got stuck in the receiving trap. Can't get the closure open now. Pressure equalized but something's jammed.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Pig had broken apart and a chunk was wedged in the reducer. Fished it out, cleaned the trap. Going to use a different pig type next time, the foam ones keep shredding.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-016",
+    "title": "UPS battery bank low capacity",
+    "description": "Annual UPS load test showed battery bank only holds 8 minutes instead of the rated 30 minutes. These are the batteries backing up the ESD and F&G systems.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Replaced all 40 cells in the battery bank. New load test showed 34 minutes. Old cells were 7 years into a 5-year rated life -- should have been caught earlier.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-017",
+    "title": "F-11 oil down 30% in 2 months, water up",
+    "description": "F-11 went from 3200 to about 2200 Sm3/mth oil over the last 60 days. Water cut climbed from 45% to 62% at the same time. No equipment changes, no choke changes. Something's going on downhole.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "Ran nodal analysis -- looks like water coning. Choked back from 22mm to 18mm bean. Stabilized at ~2800 Sm3/mth with 52% WC. Not great but better than losing it all.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-018",
+    "title": "GOR creeping up on F-1 C",
+    "description": "GOR on F-1 C has gone from 180 to about 250 Sm3/Sm3 over the past 3 months. Wondering if we're getting close to bubble point. Reservoir pressure was 245 bar at last PBU, Pb is 238 bar.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "PBU confirmed 241 bar -- basically at bubble point. Cut rate from 450 to 380 Sm3/d to manage GOR. Added this well to the pressure maintenance review.",
+    "wellbore": "15/9-F-1 C"
+  },
+  {
+    "id": "TKT-019",
+    "title": "Field total 15% under forecast",
+    "description": "November total came in at 38,200 Sm3 oil vs the forecast of 45,000. That's 15% short. It's not just one well -- F-11, F-1C, and F-14 are all down. Need to figure out if this is the compressor issue or something else.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "Compressor had been derated since Oct 18 -- gas lift pressure was 20 bar below target on 3 wells. Fixed the compressor (worn 3rd stage valve plates). Production recovered over the next 2 weeks.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-020",
+    "title": "F-14 not making what the IPR says it should",
+    "description": "Did an IPR update for F-14 and it says we should be getting ~1800 Sm3/d but we're only making 1450. Skin looks high. Maybe time for a stim job?",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Ran 15% HCl acid job, 8 m3 volume. Skin dropped from 12 to about 3. Making 1720 now. Close enough to IPR given the uncertainties.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-021",
+    "title": "Water breakthrough on F-15 D - WC jumped to 75%",
+    "description": "F-15 D water cut went from 20% to 75% basically overnight last Tuesday. Something broke through or we've got a casing problem. Oil rate crashed from 1100 to 300 Sm3/d.",
+    "category": "production_decline",
+    "priority": "critical",
+    "resolution": "PLT showed water entry at 3100m through a casing split. Ran cement squeeze, got WC back down to 30%. Holding for now but this casing is getting old.",
+    "wellbore": "15/9-F-15 D"
+  },
+  {
+    "id": "TKT-022",
+    "title": "F-1 B declining faster than type curve",
+    "description": "F-1 B decline has steepened -- was 8%/yr, now tracking at about 14%/yr. We're well below the type curve. Reservoir guys want a pressure survey to see what's going on.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "PBU showed faster-than-expected depletion near the wellbore. Possible fault compartmentalization. Recommended revisiting the drainage area assumptions in the subsurface model.",
+    "wellbore": "15/9-F-1 B"
+  },
+  {
+    "id": "TKT-023",
+    "title": "Production erratic since workover on F-4",
+    "description": "Ever since the workover 3 weeks ago F-4 has been all over the place. Some days 600, some days 200, then 500 again. Looks like slug flow from the wellhead pressure trace.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Installed a 2-7/8\" velocity string inside the 4-1/2\" tubing. Flow stabilized, averaging about 520 Sm3/d now, which is actually better than pre-workover.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-024",
+    "title": "Seasonal dip? All wells down ~8%",
+    "description": "Everything dropped about 8% this month. Happens every winter though -- shorter days, more weather downtime, some wells get wax issues. Just want to confirm it's not something new this time.",
+    "category": "production_decline",
+    "priority": "low",
+    "resolution": "Checked against last 3 years -- consistent pattern every Nov-Jan. No action needed. Made a note for the forecasting model so it doesn't over-react.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-025",
+    "title": "F-12 oil down but gas holding steady",
+    "description": "Oil on F-12 has dropped about 25% over the past 6 weeks but gas is basically flat. Classic liquid loading maybe? The well's getting gassier and can't lift the liquid.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "Installed plunger lift. Helped a lot -- oil back to about 90% of where it was. The well is marginal though, probably 12-18 months before we need to think about artificial lift.",
+    "wellbore": "15/9-F-12"
+  },
+  {
+    "id": "TKT-026",
+    "title": "F-1 B zero prod for 2 days straight",
+    "description": "F-1 B showing zero flow since Tuesday morning. Checked the wellhead -- pressure is there (180 bar) but nothing coming up. Flowline is clear. Something plugged downhole.",
+    "category": "production_decline",
+    "priority": "critical",
+    "resolution": "CT cleanout found a wax plug at about 1800m. Circulated it out with hot xylene. Well kicked off on its own and came back to full rate. Need to review the wax inhibitor program.",
+    "wellbore": "15/9-F-1 B"
+  },
+  {
+    "id": "TKT-027",
+    "title": "F-14 oil dropping after we shut in F-12 for maintenance",
+    "description": "Weird one -- F-14 oil dropped 15% two days after we shut F-12 in for the plunger install. They're in the same drainage area according to the subsurface model. Pressure interference?",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Reservoir team confirmed pressure communication between F-12 and F-14. When F-12 came back online, F-14 recovered. Documented the interference for future planning.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-028",
+    "title": "Whole field down after power dip",
+    "description": "Had a brief power fluctuation around 0600. All ESPs tripped, gas lift compressor went down. Field basically offline. Everything restarted but it took 6 hours to get all wells back to normal.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "Lost 6 hours of production across 7 wells (~3800 Sm3 oil). Root cause was a fault on the main bus tie breaker. Electricians investigating. Added to the power reliability improvement project.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-029",
+    "title": "F-11 making more water after nearby well intervention",
+    "description": "F-11 water cut went from 48% to 57% right after the F-1 B acid job last week. Possible cross-flow through a fault? The reservoir model doesn't show communication but the timing is suspicious.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Monitored for 3 weeks. WC stabilized at 54%. Not conclusive whether it's related to the F-1 B job or just natural progression. Flagged for subsurface review at next quarterly.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-030",
+    "title": "Sand production started on F-4 again",
+    "description": "Sand detector alarm went off on F-4 three times today. Acoustic sensor showing sand rates of about 5 g/s. Had this problem before in 2013 but it went away after we choked back.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "Choked back from 20mm to 14mm. Sand rate dropped to near zero. Scheduled a sand management review -- may need to look at a gravel pack or AICD completion if this keeps happening.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-031",
+    "title": "ETS forecast vs actual gap widening",
+    "description": "For the last 3 months the ETS model has been overforecasting by about 10-12%. It used to be within 5%. Are we seeing a structural break that the model hasn't picked up?",
+    "category": "production_decline",
+    "priority": "low",
+    "resolution": "Retrained the model with the latest 6 months of data. The accelerated decline on F-11 and F-1B was dragging the forecast off. New model tracking within 4% again.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-032",
+    "title": "H2S alarm at F-14 wellhead",
+    "description": "H2S detector at F-14 went off at 8 ppm around 1045. Area evacuated per procedure. Wind was from the south so mustered at the north assembly point. Nobody was in the immediate area when it tripped.",
+    "category": "safety_incident",
+    "priority": "critical",
+    "resolution": "Source was a weeping stem packing on the wing valve. Tightened the packing gland, levels dropped to zero immediately. Updated the H2S risk register for this wellpad.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-033",
+    "title": "Operator slipped on cellar deck near F-11",
+    "description": "Knut slipped on oily deck plates near the F-11 cellar deck during his 0600 rounds. Caught himself on the handrail but tweaked his wrist. First aid -- ice and a bandage. Back on duty.",
+    "category": "safety_incident",
+    "priority": "medium",
+    "resolution": "Oil was dripping from the wing valve gland. Fixed the leak, cleaned the deck, put a drip tray under it. Added this spot to the daily housekeeping checklist.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-034",
+    "title": "PSV lifted on test sep during well test",
+    "description": "Pressure safety valve on the test separator popped during the F-1 C well test. Released to flare, no drama, but it shouldn't have gotten that high. Nobody was on the test sep deck at the time.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Pressure sensing line to the PCV was blocked with scale. That's why pressure built up past the PCV setpoint. Cleared the line, flushed it, added it to the monthly PM checklist.",
+    "wellbore": "15/9-F-1 C"
+  },
+  {
+    "id": "TKT-035",
+    "title": "Dropped object - tool basket fell 3m",
+    "description": "Tool basket dropped from about 3 meters during a crane lift near F-15 D wellhead. Nobody underneath, drop zone was roped off properly. Basket hit the grating and dented it.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Lifting eye on the basket was worn thin. Should have been caught in pre-use inspection. Replaced all lifting eyes on all baskets. Stand-down with the crane crew about DROPS.",
+    "wellbore": "15/9-F-15 D"
+  },
+  {
+    "id": "TKT-036",
+    "title": "LEL alarm in pump room",
+    "description": "Gas alarm in the pump room, 15% LEL. Ventilation kicked in automatically. Traced it to a 1/2\" flange on the gas export header that was finger tight -- somebody forgot to torque it after the gasket change yesterday.",
+    "category": "safety_incident",
+    "priority": "critical",
+    "resolution": "Isolated, torqued the flange properly, leak tested. All clear. Raised a non-conformance against the work pack -- the torque verification step was signed off but clearly wasn't done.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-037",
+    "title": "LOTO not done properly on chemical pump",
+    "description": "Lars from electrical went to do PM on the methanol pump and found the breaker was still ON. The lock was on the wrong breaker. Nobody got hurt but this is a serious one.",
+    "category": "safety_incident",
+    "priority": "critical",
+    "resolution": "Stop work, full investigation. Turns out the isolation schedule had the wrong breaker number (typo in the work pack). Updated the schedule, mandatory two-person verification for all LOTO going forward.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-038",
+    "title": "F&G panel going crazy - 5 false alarms today",
+    "description": "Fire and gas panel has been alarming all day. UV/IR detectors in Zone 3 and Zone 5. No actual fire or gas -- I've checked each one personally. Operators are starting to ignore the alarms and that's not OK.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Moisture ingress in two of the UV/IR detectors (cracked weather caps). Replaced the detectors and all the weather caps in those zones. Zero false alarms since.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-039",
+    "title": "Two guys entered V-301 without a permit",
+    "description": "Caught Rolf and Bjorn inside V-301 (the surge drum) without a confined space entry permit. They said they 'just wanted to take a quick look' before writing the work pack. This is a sacking offense per company policy.",
+    "category": "safety_incident",
+    "priority": "critical",
+    "resolution": "Both given formal written warnings. Mandatory confined space refresher for all crew. Installed physical locks on all vessel manholes that require a permit key to open.",
+    "wellbore": "15/9-F-12"
+  },
+  {
+    "id": "TKT-040",
+    "title": "Small oil spill during pig trap operations",
+    "description": "About 50L of crude on the deck when we opened the pig receiver on the F-14 line. Pig trap drain procedure says to drain before opening but the drain line was blocked so the operator just cracked the closure.",
+    "category": "safety_incident",
+    "priority": "medium",
+    "resolution": "Cleaned up with absorbent. Unblocked the drain line (paraffin). Rewrote the procedure: must confirm drain flow before opening closure. No environmental release -- stayed within the bund.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-041",
+    "title": "ESD activation - high-high level on prod sep",
+    "description": "Production separator V-101 went to ESD on high-high liquid level at 0320. All wells shut in. Night operator was alone in the control room and was dealing with the SCADA issue at the time so didn't catch the high level alarm.",
+    "category": "safety_incident",
+    "priority": "critical",
+    "resolution": "Water dump valve was stuck open (debris in the seat). Replaced valve internals. ESD system worked exactly as designed. Also reviewing single-operator night shift staffing.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-042",
+    "title": "Scaffolder fell from 2m height",
+    "description": "Scaffolder lost his footing while erecting scaffold near the flare KO drum. Fell about 2 meters onto grating below. Complaining of back pain, sent to medic. Fall arrest was attached but the lanyard was too long to arrest the fall at that height.",
+    "category": "safety_incident",
+    "priority": "critical",
+    "resolution": "Medevac to shore for X-rays -- bruised ribs, no fractures. Investigation found the SWL lanyard was 2m but working height was only 2.5m above the lower deck. Need shorter lanyards or a rail system for low-level work.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-043",
+    "title": "Lifeboat engine wouldn't start during drill",
+    "description": "Weekly lifeboat drill -- engine on LB-2 wouldn't start. Cranked for 30 seconds, nothing. LB-1 and LB-3 both fine. This is a critical safety system.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Fuel injector fouled. Replaced and engine starts fine now. Added a monthly running test (not just cranking) to the PM schedule for all three boats.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-044",
+    "title": "Near miss - forklift almost hit pedestrian",
+    "description": "Forklift reversing on the pipe deck nearly hit one of the scaffolders walking behind it. Maybe 30cm clearance. No contact, no injury. Forklift reverse alarm was working but it's loud on the pipe deck anyway.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Installed blue spot warning light on the forklift. Repainted the pedestrian walkway. Briefed all crews on pipe deck traffic management.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-045",
+    "title": "Schedule tubing inspection on F-1 B",
+    "description": "F-1 B is due for its 5-year tubing integrity check. Need wireline caliper + UT log. Well has to be shut in for about 48 hours. Can we fit this into the November shutdown?",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "Completed during the Nov maintenance window. Caliper showed minor pitting around 2400m, nothing outside limits. Next inspection in 3 years.",
+    "wellbore": "15/9-F-1 B"
+  },
+  {
+    "id": "TKT-046",
+    "title": "Compressor 20k hour overhaul due",
+    "description": "GL compressor C-301 is at 19,800 hours. OEM says major overhaul at 20k -- bearings, valves, piston rings, the lot. Need a 5-day window.",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "Done during planned shutdown. Bearings were within spec but replaced anyway. Third stage discharge valves were worn. Compressor running noticeably smoother now, lower vibration.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-047",
+    "title": "BOP annual test - must be done by Nov 30",
+    "description": "Annual BOP function and pressure test per NORSOK D-010. PSA deadline is end of November. Need to coordinate with drilling and well ops.",
+    "category": "maintenance_request",
+    "priority": "high",
+    "resolution": "All BOP functions tested satisfactory. Full pressure test to rated WP. Had to change the annular element (minor seep at 80% of rated). Cert renewed.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-048",
+    "title": "F-4 flowline section needs replacing",
+    "description": "Last ILI run showed 60% wall loss over a 30m stretch of the F-4 flowline near the riser base. That's beyond the minimum wall threshold. Has to be replaced before we ramp up production again.",
+    "category": "maintenance_request",
+    "priority": "high",
+    "resolution": "Cut out and replaced with 25Cr super duplex. Hydrotested OK. Also installed corrosion monitoring coupons at both ends of the new section.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-049",
+    "title": "Fiscal metering calibration Q4",
+    "description": "Quarterly cal of all fiscal meters is due. Oil, gas, and water on the prod separator plus the test separator meters. Need the test sep offline for a day.",
+    "category": "maintenance_request",
+    "priority": "low",
+    "resolution": "All within 0.5% tolerance. Oil meter needed a small K-factor tweak. Certs sent to NPD as required.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-050",
+    "title": "Annual Xmas tree valve greasing",
+    "description": "Time for the yearly grease program on all 7 wellheads. Master valves, wing valves, swab valves. Takes about half a day per well.",
+    "category": "maintenance_request",
+    "priority": "low",
+    "resolution": "All done. Two valves on F-12 were stiff and needed extra grease cycles. One swab valve on F-4 wouldn't fully close -- added to the workover scope.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-051",
+    "title": "SCADA security patch",
+    "description": "Vendor sent a critical security update for the SCADA system. The current version has a known vulnerability that's been published. Need 4 hours downtime to apply it.",
+    "category": "maintenance_request",
+    "priority": "high",
+    "resolution": "Patched during night shift. Tested all RTU comms after. Everything came back clean. Took a bit longer than 4 hours because the server needed a firmware update too.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-052",
+    "title": "Wellhead structure repainting",
+    "description": "Annual corrosion protection maintenance. The salt air out here chews through carbon steel coatings in about a year. All 7 wellhead structures need blasting and recoating.",
+    "category": "maintenance_request",
+    "priority": "low",
+    "resolution": "Blast cleaned and recoated with marine epoxy system. Logged UT thickness measurements for trending. F-14 structure had some pitting -- monitoring.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-053",
+    "title": "Emergency genset filter change",
+    "description": "Diesel genset G-001 is at 500 hours, needs fuel filter replacement. This is the backup for ESD and F&G so kind of important to keep it in good shape.",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "Changed primary and secondary fuel filters. Ran a 1-hour load test at 100%. All good, logged in the PM system.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-054",
+    "title": "Replace leaking sample point valve on V-101",
+    "description": "Sample point #3 on V-101 (prod separator) has a slow weep from the needle valve. Can take a sample but it drips afterwards. Not urgent but it'll get worse.",
+    "category": "maintenance_request",
+    "priority": "low",
+    "resolution": "Isolated and replaced the needle valve during a well test changeover. No production impact.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-055",
+    "title": "Crane annual recertification",
+    "description": "Main platform crane due for annual cert per DNV rules. Need the surveyor out here, takes 2 days. Crane out of service during the inspection.",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "Surveyor completed inspection. Passed with minor findings: worn sheave on the whip line (replaced) and a hydraulic hose showing cracking (replaced). Cert renewed for 12 months.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-056",
+    "title": "Order spares for ESP on F-1 C",
+    "description": "After the last ESP trip we're running on borrowed time. Need to order a complete replacement pump + motor + cable kit so it's ready when we pull this one. Lead time is 8 weeks.",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "Ordered Schlumberger REDA 456 series motor + 150 stage pump + flat cable. ETA 9 weeks. Stored in onshore warehouse until the next intervention window.",
+    "wellbore": "15/9-F-1 C"
+  },
+  {
+    "id": "TKT-057",
+    "title": "Pressure transmitter PM - all wellheads",
+    "description": "6-monthly PM on all wellhead pressure transmitters. Need to bench calibrate against reference gauge. 14 transmitters total across 7 wells.",
+    "category": "maintenance_request",
+    "priority": "low",
+    "resolution": "12 of 14 within spec. Two on F-12 and F-4 had drifted by ~1.5% and were recalibrated. All back within 0.25% of reference.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-058",
+    "title": "HVAC filter change in LQ",
+    "description": "Living quarter HVAC filters are past due. Air quality tests are still OK but there's visible dust on the intake filters. Need a full change-out.",
+    "category": "maintenance_request",
+    "priority": "low",
+    "resolution": "Changed all HEPA and pre-filters in LQ HVAC units 1 through 4. System running fine, air quality test results improved.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-059",
+    "title": "F-12 March data missing from prod DB",
+    "description": "March 2015 allocation report shows zero for F-12 but the well was definitely producing -- I can see the SCADA data. Something didn't transfer across.",
+    "category": "data_quality",
+    "priority": "high",
+    "resolution": "The nightly ETL job failed on March 3 and nobody noticed. Manually backfilled the data and added a monitoring alert so we catch ETL failures same-day.",
+    "wellbore": "15/9-F-12"
+  },
+  {
+    "id": "TKT-060",
+    "title": "Negative water volumes for F-1 C in Feb",
+    "description": "F-1 C is showing -340 Sm3 water for February 2015 in the database. Can't have negative production. Looks like someone applied a meter correction backwards.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Yep, the meter factor correction was applied with the wrong sign. Fixed it. Also added a validation rule to reject any negative production values at ingestion.",
+    "wellbore": "15/9-F-1 C"
+  },
+  {
+    "id": "TKT-061",
+    "title": "Duplicate rows in Q3 2014 export",
+    "description": "Ran the monthly prod export for the annual report and the Q3 2014 numbers are way too high. Turns out there are duplicate rows for 4 wellbores. Total oil is overstated by about 30%.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "The export SQL query was joining on year+month without including wellbore, creating duplicates. Fixed the query and regenerated the export.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-062",
+    "title": "Gas volumes off by factor of 1000",
+    "description": "The dashboard is showing gas production of 3.2 Sm3 for last month. Should be 3,200,000. SCADA reports in kSm3 and the DB expects Sm3. Nobody put a conversion in the ETL.",
+    "category": "data_quality",
+    "priority": "high",
+    "resolution": "Added x1000 conversion for gas volumes in the ETL pipeline. Went back and fixed all historical gas data. KPIs and forecasts make sense now.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-063",
+    "title": "Wellbore names inconsistent across data sources",
+    "description": "Raw data has '15/9-F-11', the SCADA export says 'F-11', and the old Equinor CSV says 'Volve F-11'. Groupby breaks every time we merge data. This is a mess.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Built a name mapping table in the data prep module. All variants get standardized to the official '15/9-F-XX' format during the cleaning step.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-064",
+    "title": "On-stream hours > 744 in several months",
+    "description": "Found months with on-stream hours of 760, 780 etc. Max possible in a 31-day month is 744. Probably allocation overlap from the production accounting system.",
+    "category": "data_quality",
+    "priority": "low",
+    "resolution": "Capped at the actual hours in each calendar month during the cleaning step. Added a validation flag so we can investigate the worst offenders.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-065",
+    "title": "Date format mess in uploaded CSVs",
+    "description": "Got burned again with the date format. Someone uploaded a CSV with MM/DD/YYYY and the parser read 03/04/2015 as March 4th when it should be April 3rd. Half of Q1 2015 is in the wrong month.",
+    "category": "data_quality",
+    "priority": "high",
+    "resolution": "Standardized on DD/MM/YYYY (European format, which is what Equinor uses). Added a date format check on file upload that rejects ambiguous formats.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-066",
+    "title": "MAPE = infinity when actual is zero",
+    "description": "The backtest report shows MAPE = inf for months where a well was shut in (actual = 0). Can't divide by zero. Makes the whole summary metric useless.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Excluded zero-production months from MAPE. Added WAPE as the primary metric instead -- it handles zeros fine because it uses total actuals as the denominator.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-067",
+    "title": "Oil and condensate lumped together",
+    "description": "The raw data puts oil and condensate into one 'oil' column. Finance needs them split for the annual report because they're taxed differently. We don't have a separate condensate meter.",
+    "category": "data_quality",
+    "priority": "low",
+    "resolution": "Applied a condensate fraction based on the GOR correlation from the PVT report. It's an estimate but better than nothing. Documented the methodology in the data dictionary.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-068",
+    "title": "Anomaly flag triggered by data gap not real anomaly",
+    "description": "The z-score anomaly detection flagged F-1 B in June 2014 as a -3.1 sigma event. Looked into it -- there's a 2-week data gap that's pulling the rolling average way down. Not a real production anomaly.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Added a data completeness check before running anomaly detection. Gaps > 7 days are either interpolated or excluded from the rolling window. Reran and the false flag is gone.",
+    "wellbore": "15/9-F-1 B"
+  },
+  {
+    "id": "TKT-069",
+    "title": "Test separator allocation not matching prod separator",
+    "description": "When I compare F-11's well test rates from the test sep to its allocated production from the prod sep, there's a 20% discrepancy. Well test says 3100 Sm3/d but allocation gives 2500.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Test separator oil meter was reading high -- K-factor was off by 18%. Recalibrated against prover. Retroactively adjusted the last 3 months of well test data.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-070",
+    "title": "Dashboard crashes when no forecast data exists",
+    "description": "New user tried to load the dashboard for wellbore F-15 D which has less than 12 months of data. The forecast module threw an error and the whole dashboard went white.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Added a check: if history < 12 months, skip forecasting and show 'Insufficient data for forecast' instead of crashing. Also wrapped the forecast call in try/except.",
+    "wellbore": "15/9-F-15 D"
+  },
+  {
+    "id": "TKT-071",
+    "title": "Backtest window mismatch after data update",
+    "description": "After the latest data load, the backtest is using 12 months ending Sept 2016 but the data actually ends in July 2016. It's backtesting against zeros that shouldn't be there.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Fixed the backtest to dynamically determine the last month with valid data instead of assuming a fixed end date. Zeros beyond the data range are now excluded.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-072",
+    "title": "Excel export cutting off decimal places",
+    "description": "When production engineers download the CSV from the dashboard and open it in Excel, the oil volumes lose their decimal places. 3241.7 becomes 3241. Causes rounding issues in their spreadsheets.",
+    "category": "data_quality",
+    "priority": "low",
+    "resolution": "Changed the CSV export to use 2 decimal places for all numeric columns. Also added a note in the download section about Excel's auto-formatting behavior.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-073",
+    "title": "SCADA timestamps drifted 15 minutes",
+    "description": "Noticed the SCADA timestamps are about 15 minutes behind the real time. Been like this for who knows how long. Affects all the time-based analysis and correlations.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "NTP sync on the SCADA server had failed. Reconfigured NTP to sync against the platform GPS clock. Timestamps corrected going forward; historical data left as-is with a note.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-074",
+    "title": "Injection volumes showing up as production",
+    "description": "The F-4 water injection volumes are somehow ending up in the water production column in the monthly report. Makes it look like F-4 is producing 10x more water than it actually is.",
+    "category": "data_quality",
+    "priority": "high",
+    "resolution": "The column mapping in the ETL was wrong -- WI (water injection) was mapped to 'water' instead of 'water_injection'. Fixed the mapping. Corrected 8 months of historical data.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-075",
+    "title": "Methanol injection pump cavitating",
+    "description": "MeOH pump P-205 is making that cavitation noise again and flow rate is down 40%. Suction filter might be clogged. We need this pump for hydrate prevention during the cold snap next week.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Suction strainer was 80% blocked with particulate. Cleaned it. Flow restored. Set up weekly strainer checks during winter months.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-076",
+    "title": "Helideck lights out",
+    "description": "Three of the perimeter lights on the helideck are dead. Can't accept flights after dark until they're fixed. Crew change is Thursday evening.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Two were bulb failures, one was a corroded connector. All fixed. Tested at dusk, all lights operational. Helideck certified for night ops.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-077",
+    "title": "Sewage treatment plant alarm",
+    "description": "STP showing high chlorine and the UV sterilizer isn't working. We can't discharge overboard until this is sorted. Tank is at 70% capacity.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "UV lamp had burned out (8000 hrs, rated for 6000). Replaced lamp and sleeve. Chlorine dosing pump was over-dosing due to a stuck check valve. Fixed both. Discharge now meets spec.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-078",
+    "title": "F-11 DHSV won't close on command",
+    "description": "Tried to close the downhole safety valve on F-11 during a monthly function test and it won't close. Hydraulic pressure is there but the valve isn't moving. This is a well barrier issue.",
+    "category": "equipment_failure",
+    "priority": "critical",
+    "resolution": "Pumped clean hydraulic fluid through the control line -- suspected wax/debris in the actuator. DHSV now closing in 12 seconds (within the 30s limit). Will monitor closely.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-079",
+    "title": "Potable water maker low output",
+    "description": "Reverse osmosis unit only making about 60% of rated capacity. Membrane pressure drop is high. Last changed membranes 2 years ago. Fresh water tank at 50%.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Chemical cleaned the RO membranes with citric acid. Output came back to 85%. Ordered new membranes as backup (6 week lead time) in case it drops again.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-080",
+    "title": "Vibration alarm on seawater lift pump",
+    "description": "SW pump P-001A showing high vibration on DE bearing. 12 mm/s vs the 7 mm/s alarm limit. Switched to P-001B for now but B had its own issues last month.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "Pulled P-001A -- impeller had lost a piece, causing imbalance. Replaced impeller and both bearings. Vibration now at 2.5 mm/s. P-001B held up fine as backup.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-081",
+    "title": "F-4 choking itself -- tubing hydrate?",
+    "description": "F-4 keeps choking down every morning when it's cold. Wellhead pressure builds, flow drops. Clears up by midday when it warms up. Looks like hydrate formation in the upper tubing section.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Increased continuous methanol injection from 50 to 150 L/hr on F-4. Morning choke events stopped. Also insulated the exposed tubing hanger area.",
+    "wellbore": "15/9-F-4"
+  },
+  {
+    "id": "TKT-082",
+    "title": "F-14 keeps loading up after shut-ins",
+    "description": "Every time we shut in F-14 for more than a day it takes 3-4 days to clean up and get back to normal rate. It's getting worse. Lots of fluid on top of the gas column.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Started flowing F-14 through the test separator after shut-ins to handle the cleanup without upsetting the production separator. Also considering gas lift optimization.",
+    "wellbore": "15/9-F-14"
+  },
+  {
+    "id": "TKT-083",
+    "title": "Separator carry-over after F-15 D opened up",
+    "description": "When we opened F-15 D up 2mm on the bean, the prod sep started carrying over oil into the gas stream. Gas quality went off-spec for export.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "F-15 D was slugging at the higher rate. Backed off to the original bean size. Need to look at a slug catcher or ramp-up procedure before trying again.",
+    "wellbore": "15/9-F-15 D"
+  },
+  {
+    "id": "TKT-084",
+    "title": "Wax problems building on F-1 B",
+    "description": "Wax inhibitor residuals are dropping on F-1 B and the WHP is slowly climbing (60 bar to 68 bar over 3 weeks). Last CT wax cleanout was only 4 months ago. Getting more frequent.",
+    "category": "production_decline",
+    "priority": "medium",
+    "resolution": "Increased wax inhibitor injection rate and switched to a higher-performing inhibitor (Baker Hughes SOLVTREAT). WHP stabilized. CT cleanout deferred but staying on standby.",
+    "wellbore": "15/9-F-1 B"
+  },
+  {
+    "id": "TKT-085",
+    "title": "Smoke in galley -- kitchen fire suppression activated",
+    "description": "Fire suppression in the galley kitchen discharged at lunch time. Apparently a grease buildup in the extraction hood caught fire. Kitchen staff evacuated correctly. Mess of foam everywhere.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Cleaned up, inspected the hood and ductwork (significant grease buildup -- cleaning schedule wasn't being followed). Deep cleaned, recharged the fire suppression, and put the monthly hood cleaning on the OIM's audit checklist.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-086",
+    "title": "Static shock during hose transfer",
+    "description": "Deck crew member got a static shock while connecting a hose to the chemical tote during offloading from supply vessel. Felt through his gloves. No injury.",
+    "category": "safety_incident",
+    "priority": "medium",
+    "resolution": "Bonding cable wasn't connected between the tote and the deck manifold. Procedural failure -- the offshore loading checklist skips that step. Updated the checklist.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-087",
+    "title": "Crane boom hit handrail during night lift",
+    "description": "Crane boom contacted the handrail on the upper deck during a container lift at night. Bent about 3 meters of handrail. Nobody in the area. Crane anti-collision system wasn't set up correctly for that lift radius.",
+    "category": "safety_incident",
+    "priority": "high",
+    "resolution": "Handrail replaced, temporary barrier put up overnight. Crane ACS recalibrated and verified. Night lifting procedure updated to require a banksman at both the pick-up and set-down locations.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-088",
+    "title": "Power BI report pulling stale data",
+    "description": "The weekly Power BI report that management looks at is showing data from 2 weeks ago. It's supposed to refresh daily. Nobody noticed until the ops manager asked why the numbers were the same as last week.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "The Power BI gateway service had crashed on the server. Restarted it and set up an uptime monitor. Data refresh resumed.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-089",
+    "title": "Well test data not uploaded for October",
+    "description": "Realized the October well test results never made it into the database. They're sitting in a spreadsheet on the well test engineer's laptop. All 7 wells affected.",
+    "category": "data_quality",
+    "priority": "medium",
+    "resolution": "Uploaded the data. Turns out the well test engineer left for rotation and forgot to upload before he flew out. Set up a weekly reminder and a backup person to check.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-090",
+    "title": "Production allocation factors not updated since June",
+    "description": "The allocation factors used to split production between wells are still using June's well test data. We're in November. F-11's water cut has changed a lot since then. Monthly allocations are probably wrong.",
+    "category": "data_quality",
+    "priority": "high",
+    "resolution": "Updated allocation factors based on the most recent well tests. Retroactively recalculated July-October allocations. Differences were up to 12% for some wells.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-091",
+    "title": "Order new fire extinguishers -- 12 due for replacement",
+    "description": "12 powder extinguishers failed their 5-year hydrostatic test. Need replacements before the maritime inspector visit in 3 weeks.",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "Ordered 15 new ABC powder extinguishers (3 spares). Delivered on next supply boat. All installed and tagged before the inspection.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-092",
+    "title": "Replace worn gas detector heads - zone 2",
+    "description": "4 of the 6 catalytic gas detector heads in zone 2 failed the monthly bump test. They're past their 2-year service life. Spares on the platform.",
+    "category": "maintenance_request",
+    "priority": "high",
+    "resolution": "Replaced all 6 heads in zone 2 (did the other 2 proactively). All passed bump test. Old heads were 28 months in service.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-093",
+    "title": "Anchor chain inspection overdue",
+    "description": "Anchor chain inspection for the FSU is 3 months overdue. Need an ROV dive to check chain condition and measure catenary. Weather window required.",
+    "category": "maintenance_request",
+    "priority": "medium",
+    "resolution": "ROV survey completed. Chain in good condition, no excessive wear. One shackle showing minor corrosion -- flagged for replacement at next drydock.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-094",
+    "title": "Can't tell if this is equipment or production issue",
+    "description": "F-1 C rate dropped 20% but the VSD is also showing weird current fluctuations. Could be the ESP going bad OR could be a reservoir issue restricting inflow. Need to figure out which it is before we decide what to do.",
+    "category": "production_decline",
+    "priority": "high",
+    "resolution": "Ran a step-rate test and the IPR looks unchanged. ESP current signature analysis showed early stage gas locking. Adjusted gas separator settings on the ESP and rate recovered.",
+    "wellbore": "15/9-F-1 C"
+  },
+  {
+    "id": "TKT-095",
+    "title": "Chemical tank ran dry without anyone noticing",
+    "description": "Demulsifier tank for the production separator ran empty over the weekend. Nobody checked it. Emulsion building up in the separator, water quality going off-spec for discharge.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Emergency chemical delivery on supply boat. Refilled and restarted injection. Added low-level alarm to the tank (should have had one already). Assigned daily level check to panel operator.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-096",
+    "title": "Permit system down - can't issue any permits",
+    "description": "The electronic permit-to-work system is offline. Server error. We can't issue work permits which means all non-essential maintenance is on hold. Can use paper permits for essential work only.",
+    "category": "equipment_failure",
+    "priority": "critical",
+    "resolution": "Server hard drive failure. IT rebuilt the system from backup overnight. All data recovered. Set up RAID redundancy on the new drive.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-097",
+    "title": "Supply boat can't dock -- fender damaged",
+    "description": "One of the three boat landing fenders is torn and hanging. Can't safely dock the supply boat until it's repaired or removed. Next supply run is in 18 hours.",
+    "category": "equipment_failure",
+    "priority": "high",
+    "resolution": "Cut away the damaged fender section. Remaining two fenders provide adequate protection for standard supply boat ops. Replacement fender ordered (6 week lead time).",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-098",
+    "title": "Turbine generator trip on high exhaust temp",
+    "description": "Gas turbine G-002 tripped on high exhaust temperature during ramp up. Running on G-001 only. No production impact yet but we're on single generation with no backup.",
+    "category": "equipment_failure",
+    "priority": "critical",
+    "resolution": "Thermocouple #4 on the exhaust was reading 30C high vs the others -- thermocouple failure, not actual overtemp. Replaced the TC and restarted. Both turbines online.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-099",
+    "title": "PA/GA system feedback squeal on deck 3",
+    "description": "The public address system is squealing every time someone makes an announcement. Feedback loop on deck 3 speakers. Nobody can understand announcements up there.",
+    "category": "equipment_failure",
+    "priority": "medium",
+    "resolution": "One of the deck 3 speakers had water damage and was acting as a microphone instead of a speaker. Replaced it. PA clear on all decks.",
+    "wellbore": "15/9-F-11"
+  },
+  {
+    "id": "TKT-100",
+    "title": "Berthing alarm wakes everyone up at 3 AM",
+    "description": "False berthing alarm in cabin block C went off at 0300. Turned out to be a faulty detector. Third time this month. People are not happy.",
+    "category": "safety_incident",
+    "priority": "medium",
+    "resolution": "Replaced the faulty smoke detector in cabin C-14. Tested all detectors in block C. Found two more near end-of-life and replaced them proactively.",
+    "wellbore": "15/9-F-11"
+  }
+]
