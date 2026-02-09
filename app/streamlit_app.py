@@ -2,7 +2,7 @@
 Ticket Triage RAG Bot -- Streamlit Dashboard
 
 Interactive demo for classifying and triaging oil & gas support tickets
-using Gemini embeddings, cosine similarity retrieval, and LLM generation.
+using embedding-based retrieval and LLM generation (OpenAI or Gemini).
 """
 
 import json
@@ -14,7 +14,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.config import GEMINI_API_KEY, TICKETS_PATH, EMBEDDINGS_PATH, TICKET_IDS_PATH
+from src.config import API_KEY, LLM_PROVIDER, TICKETS_PATH, EMBEDDINGS_PATH, TICKET_IDS_PATH
 
 
 # ---------------------------------------------------------------------------
@@ -28,26 +28,29 @@ st.set_page_config(
 )
 
 st.title("Ticket Triage RAG Bot")
-st.caption("Embedding-based retrieval + Gemini classification for oil & gas support tickets")
+st.caption("Embedding-based retrieval + LLM classification for oil & gas support tickets")
 
 
 # ---------------------------------------------------------------------------
 # Status checks
 # ---------------------------------------------------------------------------
 
-has_api_key = bool(GEMINI_API_KEY)
+has_api_key = bool(API_KEY)
 has_tickets = TICKETS_PATH.exists()
 has_embeddings = EMBEDDINGS_PATH.exists() and TICKET_IDS_PATH.exists()
+
+provider_label = "OpenAI" if LLM_PROVIDER == "openai" else "Gemini"
 
 with st.sidebar:
     st.header("System Status")
 
-    st.metric("Gemini API", "Connected" if has_api_key else "Not configured")
+    st.metric("LLM Provider", provider_label)
+    st.metric("API Key", "Connected" if has_api_key else "Not configured")
     st.metric("Ticket Data", "Loaded" if has_tickets else "Missing")
     st.metric("Embeddings", "Cached" if has_embeddings else "Not generated")
 
     if not has_api_key:
-        st.warning("Set GEMINI_API_KEY in .env to enable classification and RAG.")
+        st.warning("Set OPENAI_API_KEY or GEMINI_API_KEY in .env to enable triage.")
 
     if has_tickets:
         with open(TICKETS_PATH) as f:
@@ -64,8 +67,12 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("**Tech Stack:**")
-    st.text("Gemini 2.0 Flash")
-    st.text("gemini-embedding-001")
+    if LLM_PROVIDER == "openai":
+        st.text("GPT-4o Mini")
+        st.text("text-embedding-3-small")
+    else:
+        st.text("Gemini 2.0 Flash")
+        st.text("gemini-embedding-001")
     st.text("NumPy cosine similarity")
     st.text("No external vector DB")
 
@@ -151,7 +158,7 @@ with tab_triage:
                 )
 
     if not has_api_key:
-        st.info("Configure GEMINI_API_KEY to enable triage. Without it, you can still browse tickets below.")
+        st.info("Configure your API key in .env to enable triage.")
     elif not has_embeddings:
         st.info("Run `python -m src.embeddings` to generate embeddings before triaging.")
 
@@ -216,7 +223,7 @@ with tab_search:
     if not has_embeddings:
         st.warning("Embeddings not generated. Run `python -m src.embeddings` first.")
     elif not has_api_key:
-        st.warning("GEMINI_API_KEY required for embedding queries.")
+        st.warning("API key required for embedding queries.")
     else:
         search_query = st.text_input(
             "Search query",

@@ -1,6 +1,5 @@
 """Tests for the RAG pipeline module."""
 
-import json
 import numpy as np
 import pytest
 from unittest.mock import patch, MagicMock
@@ -40,15 +39,6 @@ def mock_store():
     )
 
 
-def _make_mock_client(response_text):
-    """Create a mock client for Gemini."""
-    mock_response = MagicMock()
-    mock_response.text = response_text
-    mock_client = MagicMock()
-    mock_client.models.generate_content.return_value = mock_response
-    return mock_client
-
-
 class TestTriageTicket:
     def test_returns_expected_keys(self, mock_store):
         mock_embedding = [1.0, 0.0, 0.0]
@@ -58,12 +48,12 @@ class TestTriageTicket:
             "confidence": "high",
             "reasoning": "Pump issue",
         }
-        mock_client = _make_mock_client("Suggested resolution: restart the pump.")
 
         with (
             patch("src.rag.embed_text", return_value=mock_embedding),
             patch("src.rag.classify_ticket", return_value=mock_classify),
-            patch("src.rag._get_model", return_value=mock_client),
+            patch("src.rag._get_client", return_value=MagicMock()),
+            patch("src.rag._generate", return_value="Suggested resolution: restart the pump."),
         ):
             from src.rag import triage_ticket
 
@@ -84,12 +74,12 @@ class TestTriageTicket:
             "confidence": "high",
             "reasoning": "ESP failure detected",
         }
-        mock_client = _make_mock_client("Check and restart pump.")
 
         with (
             patch("src.rag.embed_text", return_value=[1.0, 0.0, 0.0]),
             patch("src.rag.classify_ticket", return_value=mock_classify),
-            patch("src.rag._get_model", return_value=mock_client),
+            patch("src.rag._get_client", return_value=MagicMock()),
+            patch("src.rag._generate", return_value="Check and restart pump."),
         ):
             from src.rag import triage_ticket
 
@@ -98,15 +88,14 @@ class TestTriageTicket:
             assert result["classification"]["priority"] == "critical"
 
     def test_similar_tickets_returned(self, mock_store):
-        mock_client = _make_mock_client("Resolution suggestion.")
-
         with (
             patch("src.rag.embed_text", return_value=[0.9, 0.1, 0.0]),
             patch("src.rag.classify_ticket", return_value={
                 "category": "equipment_failure", "priority": "high",
                 "confidence": "high", "reasoning": "test"
             }),
-            patch("src.rag._get_model", return_value=mock_client),
+            patch("src.rag._get_client", return_value=MagicMock()),
+            patch("src.rag._generate", return_value="Resolution suggestion."),
         ):
             from src.rag import triage_ticket
 
@@ -115,15 +104,14 @@ class TestTriageTicket:
             assert result["similar_tickets"][0]["id"] in ["TKT-001", "TKT-002"]
 
     def test_resolution_suggestion_is_string(self, mock_store):
-        mock_client = _make_mock_client("Based on similar tickets, restart the pump after cooling.")
-
         with (
             patch("src.rag.embed_text", return_value=[1.0, 0.0, 0.0]),
             patch("src.rag.classify_ticket", return_value={
                 "category": "equipment_failure", "priority": "high",
                 "confidence": "high", "reasoning": "test"
             }),
-            patch("src.rag._get_model", return_value=mock_client),
+            patch("src.rag._get_client", return_value=MagicMock()),
+            patch("src.rag._generate", return_value="Based on similar tickets, restart the pump after cooling."),
         ):
             from src.rag import triage_ticket
 
@@ -132,15 +120,14 @@ class TestTriageTicket:
             assert len(result["resolution_suggestion"]) > 0
 
     def test_query_preserved_in_result(self, mock_store):
-        mock_client = _make_mock_client("Suggestion.")
-
         with (
             patch("src.rag.embed_text", return_value=[1.0, 0.0, 0.0]),
             patch("src.rag.classify_ticket", return_value={
                 "category": "equipment_failure", "priority": "high",
                 "confidence": "high", "reasoning": "test"
             }),
-            patch("src.rag._get_model", return_value=mock_client),
+            patch("src.rag._get_client", return_value=MagicMock()),
+            patch("src.rag._generate", return_value="Suggestion."),
         ):
             from src.rag import triage_ticket
 

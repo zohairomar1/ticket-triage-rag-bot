@@ -1,10 +1,12 @@
 """
-Embedding generation using Google Gemini gemini-embedding-001.
+Embedding generation with multi-provider support (OpenAI / Gemini).
+
+Provider is selected via LLM_PROVIDER env var in config.
 
 Features:
-- Singleton client (one genai.Client for the process lifetime)
+- Singleton client (one client per process)
 - Disk-based embedding cache (keyed by model + text hash)
-- Token-bucket rate limiter (default 90 RPM, configurable)
+- Token-bucket rate limiter (configurable RPM)
 - Exponential backoff retry on 429 / transient errors
 - Batch chunking for bulk embedding
 
@@ -20,7 +22,8 @@ import numpy as np
 from typing import List, Optional
 
 from .config import (
-    GEMINI_API_KEY,
+    LLM_PROVIDER,
+    API_KEY,
     TICKETS_PATH,
     EMBEDDINGS_PATH,
     TICKET_IDS_PATH,
@@ -41,12 +44,16 @@ _client = None
 
 
 def _get_client():
-    """Return a shared Gemini client (created once per process)."""
+    """Return a shared LLM client (created once per process)."""
     global _client
     if _client is None:
-        from google import genai
-        _client = genai.Client(api_key=GEMINI_API_KEY)
-        logger.debug("Initialized Gemini client")
+        if LLM_PROVIDER == "gemini":
+            from google import genai
+            _client = genai.Client(api_key=API_KEY)
+        else:
+            from openai import OpenAI
+            _client = OpenAI(api_key=API_KEY)
+        logger.debug("Initialized %s client", LLM_PROVIDER)
     return _client
 
 
@@ -89,7 +96,7 @@ class _RateLimiter:
     """Simple token-bucket rate limiter for RPM."""
 
     def __init__(self, rpm: int):
-        self.interval = 60.0 / max(rpm, 1)  # seconds between requests
+        self.interval = 60.0 / max(rpm, 1)
         self._last = 0.0
 
     def wait(self):
@@ -106,23 +113,29 @@ _limiter = _RateLimiter(EMBEDDING_RPM_LIMIT)
 
 
 # ---------------------------------------------------------------------------
-# Retry with exponential backoff
+# Provider-specific embed calls with retry
 # ---------------------------------------------------------------------------
 
-def _call_embed(client, contents, max_retries: int = 4):
-    """Call embed_content with retry on 429 / transient errors."""
+def _call_embed(client, texts, max_retries: int = 4):
+    """Call embedding API with retry on 429 / transient errors."""
     for attempt in range(max_retries + 1):
         _limiter.wait()
         try:
-            result = client.models.embed_content(
-                model=EMBEDDING_MODEL, contents=contents
-            )
+            if LLM_PROVIDER == "gemini":
+                result = client.models.embed_content(
+                    model=EMBEDDING_MODEL, contents=texts
+                )
+            else:
+                result = client.embeddings.create(
+                    model=EMBEDDING_MODEL, input=texts
+                )
             return result
         except Exception as exc:
             status = getattr(exc, "status_code", None) or getattr(exc, "code", None)
             is_retryable = (
                 "429" in str(exc)
                 or "503" in str(exc)
+                or "rate_limit" in str(exc).lower()
                 or "RESOURCE_EXHAUSTED" in str(exc)
                 or status in (429, 503)
             )
@@ -137,12 +150,26 @@ def _call_embed(client, contents, max_retries: int = 4):
                 raise
 
 
+def _extract_single(result) -> List[float]:
+    """Extract a single embedding vector from provider response."""
+    if LLM_PROVIDER == "gemini":
+        return result.embeddings[0].values
+    return result.data[0].embedding
+
+
+def _extract_batch(result) -> List[List[float]]:
+    """Extract batch embedding vectors from provider response."""
+    if LLM_PROVIDER == "gemini":
+        return [e.values for e in result.embeddings]
+    return [e.embedding for e in result.data]
+
+
 # ---------------------------------------------------------------------------
-# Public API (signatures unchanged)
+# Public API
 # ---------------------------------------------------------------------------
 
 def embed_text(text: str, request_id: str = "") -> List[float]:
-    """Embed a single text string using Gemini. Uses cache if available."""
+    """Embed a single text string. Uses cache if available."""
     cached = _cache_get(text)
     if cached is not None:
         logger.info(
@@ -151,12 +178,17 @@ def embed_text(text: str, request_id: str = "") -> List[float]:
         return cached.tolist()
 
     logger.info(
-        "embed_text | cache=MISS | len=%d | req=%s", len(text), request_id
+        "embed_text | cache=MISS | len=%d | provider=%s | req=%s",
+        len(text), LLM_PROVIDER, request_id,
     )
     client = _get_client()
-    result = _call_embed(client, text)
-    embedding = result.embeddings[0].values
 
+    if LLM_PROVIDER == "gemini":
+        result = _call_embed(client, text)
+    else:
+        result = _call_embed(client, [text])
+
+    embedding = _extract_single(result)
     _cache_put(text, np.array(embedding, dtype=np.float32))
     return embedding
 
@@ -171,7 +203,6 @@ def embed_texts(texts: List[str], request_id: str = "") -> np.ndarray:
     embeddings = np.zeros((n, EMBEDDING_DIMENSION), dtype=np.float32)
     uncached_indices = []
 
-    # Check cache for each text
     for i, text in enumerate(texts):
         cached = _cache_get(text)
         if cached is not None:
@@ -181,14 +212,13 @@ def embed_texts(texts: List[str], request_id: str = "") -> np.ndarray:
 
     cache_hits = n - len(uncached_indices)
     logger.info(
-        "embed_texts | total=%d | cached=%d | to_embed=%d | req=%s",
-        n, cache_hits, len(uncached_indices), request_id,
+        "embed_texts | total=%d | cached=%d | to_embed=%d | provider=%s | req=%s",
+        n, cache_hits, len(uncached_indices), LLM_PROVIDER, request_id,
     )
 
     if not uncached_indices:
         return embeddings
 
-    # Batch the uncached texts
     uncached_texts = [texts[i] for i in uncached_indices]
     client = _get_client()
 
@@ -202,9 +232,10 @@ def embed_texts(texts: List[str], request_id: str = "") -> np.ndarray:
         )
 
         result = _call_embed(client, batch)
+        batch_vecs = _extract_batch(result)
 
-        for j, (idx, emb) in enumerate(zip(batch_indices, result.embeddings)):
-            vec = np.array(emb.values, dtype=np.float32)
+        for j, (idx, vec_list) in enumerate(zip(batch_indices, batch_vecs)):
+            vec = np.array(vec_list, dtype=np.float32)
             embeddings[idx] = vec
             _cache_put(uncached_texts[batch_start + j], vec)
 
@@ -223,7 +254,7 @@ def embed_tickets():
     texts = [f"{t['title']}. {t['description']}" for t in tickets]
     ids = [t["id"] for t in tickets]
 
-    print(f"Embedding {len(texts)} tickets...")
+    print(f"Embedding {len(texts)} tickets using {LLM_PROVIDER}...")
     embeddings = embed_texts(texts, request_id="bulk-index")
 
     np.save(EMBEDDINGS_PATH, embeddings)

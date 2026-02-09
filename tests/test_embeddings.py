@@ -32,6 +32,7 @@ class TestEmbedText:
         client = _mock_client([[0.1, 0.2, 0.3] * 256])
 
         with (
+            patch("src.embeddings.LLM_PROVIDER", "gemini"),
             patch("src.embeddings._get_client", return_value=client),
             patch("src.embeddings._cache_get", return_value=None),
             patch("src.embeddings._cache_put"),
@@ -61,6 +62,7 @@ class TestEmbedText:
         client = _mock_client([[0.1] * 768])
 
         with (
+            patch("src.embeddings.LLM_PROVIDER", "gemini"),
             patch("src.embeddings._get_client", return_value=client),
             patch("src.embeddings._cache_get", return_value=None),
             patch("src.embeddings._cache_put"),
@@ -76,6 +78,7 @@ class TestEmbedTexts:
         client = _mock_client([[0.1] * 768, [0.2] * 768])
 
         with (
+            patch("src.embeddings.LLM_PROVIDER", "gemini"),
             patch("src.embeddings._get_client", return_value=client),
             patch("src.embeddings._cache_get", return_value=None),
             patch("src.embeddings._cache_put"),
@@ -99,6 +102,7 @@ class TestEmbedTexts:
         client = _mock_client([[0.1] * 768, [0.2] * 768])
 
         with (
+            patch("src.embeddings.LLM_PROVIDER", "gemini"),
             patch("src.embeddings._get_client", return_value=client),
             patch("src.embeddings._cache_get", side_effect=cache_side_effect),
             patch("src.embeddings._cache_put"),
@@ -122,6 +126,7 @@ class TestEmbedTexts:
         client.models.embed_content.return_value = _mock_embed_result(vecs)
 
         with (
+            patch("src.embeddings.LLM_PROVIDER", "gemini"),
             patch("src.embeddings._get_client", return_value=client),
             patch("src.embeddings._cache_get", return_value=None),
             patch("src.embeddings._cache_put"),
@@ -163,6 +168,7 @@ class TestEmbedTickets:
             client = _mock_client([[0.1] * 768, [0.2] * 768])
 
             with (
+                patch("src.embeddings.LLM_PROVIDER", "gemini"),
                 patch("src.embeddings._get_client", return_value=client),
                 patch("src.embeddings._cache_get", return_value=None),
                 patch("src.embeddings._cache_put"),
@@ -209,7 +215,10 @@ class TestRetry:
         exc = Exception("429 RESOURCE_EXHAUSTED")
         client.models.embed_content.side_effect = [exc, good_result]
 
-        with patch("src.embeddings._limiter") as mock_limiter:
+        with (
+            patch("src.embeddings.LLM_PROVIDER", "gemini"),
+            patch("src.embeddings._limiter") as mock_limiter,
+        ):
             mock_limiter.wait = MagicMock()
             result = _call_embed(client, "test", max_retries=2)
             assert result == good_result

@@ -1,17 +1,18 @@
 """
 RAG pipeline for ticket triage.
 
-Combines embedding-based retrieval with Gemini generation to:
+Combines embedding-based retrieval with LLM generation to:
 1. Find similar historical tickets
 2. Classify the new ticket
 3. Generate a resolution suggestion based on retrieved context
+
+Supports OpenAI and Gemini via LLM_PROVIDER config.
 """
 
-import json
 import numpy as np
 from typing import Dict, List
 
-from .config import GEMINI_API_KEY, GENERATION_MODEL, TICKETS_PATH
+from .config import LLM_PROVIDER, API_KEY, GENERATION_MODEL
 from .embeddings import embed_text
 from .vector_store import VectorStore
 from .classifier import classify_ticket
@@ -30,12 +31,36 @@ Based on the historical resolutions above, suggest a resolution approach for the
 Be specific, actionable, and concise (3-5 sentences). Reference the similar tickets when relevant.
 """
 
+_client = None
 
-def _get_model():
-    """Lazy-load the Gemini generative model."""
-    from google import genai
 
-    return genai.Client(api_key=GEMINI_API_KEY)
+def _get_client():
+    """Return a shared LLM client."""
+    global _client
+    if _client is None:
+        if LLM_PROVIDER == "gemini":
+            from google import genai
+            _client = genai.Client(api_key=API_KEY)
+        else:
+            from openai import OpenAI
+            _client = OpenAI(api_key=API_KEY)
+    return _client
+
+
+def _generate(client, prompt: str) -> str:
+    """Generate text using the configured provider."""
+    if LLM_PROVIDER == "gemini":
+        response = client.models.generate_content(
+            model=GENERATION_MODEL, contents=prompt
+        )
+        return response.text
+    else:
+        response = client.chat.completions.create(
+            model=GENERATION_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+        )
+        return response.choices[0].message.content
 
 
 def _format_similar(tickets: List[Dict]) -> str:
@@ -62,47 +87,28 @@ def triage_ticket(
 
     1. Embed the query (title + description)
     2. Retrieve top_k similar historical tickets
-    3. Classify category and priority via Gemini
+    3. Classify category and priority via LLM
     4. Generate resolution suggestion using retrieved context
-
-    Parameters
-    ----------
-    title : str
-        Ticket title.
-    description : str
-        Ticket description.
-    store : VectorStore, optional
-        Pre-loaded vector store. Loads from disk if None.
-    top_k : int
-        Number of similar tickets to retrieve.
-
-    Returns
-    -------
-    dict
-        Keys: classification, similar_tickets, resolution_suggestion, query.
     """
-    # Step 1: Load store if needed
     if store is None:
         store = VectorStore.load()
 
-    # Step 2: Embed the query and retrieve similar tickets
+    # Step 1: Embed and retrieve
     query_text = f"{title}. {description}"
     query_embedding = np.array(embed_text(query_text))
     similar = store.search(query_embedding, top_k=top_k)
 
-    # Step 3: Classify
+    # Step 2: Classify
     classification = classify_ticket(title, description)
 
-    # Step 4: Generate resolution suggestion
-    client = _get_model()
+    # Step 3: Generate resolution
+    client = _get_client()
     prompt = RESOLUTION_PROMPT.format(
         title=title,
         description=description,
         similar_tickets=_format_similar(similar),
     )
-    response = client.models.generate_content(
-        model=GENERATION_MODEL, contents=prompt
-    )
+    resolution = _generate(client, prompt)
 
     return {
         "query": {"title": title, "description": description},
@@ -118,5 +124,5 @@ def triage_ticket(
             }
             for t in similar
         ],
-        "resolution_suggestion": response.text,
+        "resolution_suggestion": resolution,
     }
