@@ -8,9 +8,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 
-# Cached embeddings (regenerate with python -m src.embeddings)
-data/embeddings.npy
-data/ticket_ids.json
+# Embedding cache (per-text cache, can be regenerated)
 data/embedding_cache/
 
 # IDE
