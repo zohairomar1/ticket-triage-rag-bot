@@ -50,12 +50,13 @@ class TestClassifyTicket:
             result = classify_ticket("H2S alarm", "Gas detected at wellpad")
             assert result["priority"] in VALID_PRIORITIES
 
-    def test_handles_invalid_json(self):
+    def test_handles_invalid_json_falls_back(self):
+        """When LLM returns invalid JSON, keyword fallback kicks in."""
         p1, p2 = _patch_generate("This is not JSON")
         with p1, p2:
             result = classify_ticket("Test", "Test description")
-            assert result["category"] == "unknown"
-            assert result["confidence"] == "low"
+            assert result["category"] in VALID_CATEGORIES
+            assert result["confidence"] == "medium"
 
     def test_handles_markdown_code_fences(self):
         fenced = '```json\n{"category": "safety_incident", "priority": "critical", "confidence": "high", "reasoning": "H2S is dangerous"}\n```'

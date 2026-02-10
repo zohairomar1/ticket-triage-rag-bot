@@ -9,10 +9,13 @@ Combines embedding-based retrieval with LLM generation to:
 Supports OpenAI and Gemini via LLM_PROVIDER config.
 """
 
+import logging
 import numpy as np
 from typing import Dict, List
 
 from .config import LLM_PROVIDER, API_KEY, GENERATION_MODEL
+
+logger = logging.getLogger("rag")
 from .embeddings import embed_text
 from .vector_store import VectorStore
 from .classifier import classify_ticket
@@ -76,6 +79,18 @@ def _format_similar(tickets: List[Dict]) -> str:
     return "\n".join(lines)
 
 
+def _fallback_resolution(similar: List[Dict]) -> str:
+    """Template-based resolution when the LLM is unavailable."""
+    if not similar:
+        return "No similar historical tickets found. Manual review recommended."
+    lines = [f"Based on {len(similar)} similar historical tickets:\n"]
+    for i, t in enumerate(similar[:3], 1):
+        lines.append(f"{i}. **{t.get('title', 'N/A')}** (similarity: {t.get('score', 0):.2f})")
+        lines.append(f"   Resolution: {t.get('resolution', 'N/A')}\n")
+    lines.append("Recommend following the resolution approach from the most similar ticket above.")
+    return "\n".join(lines)
+
+
 def triage_ticket(
     title: str,
     description: str,
@@ -102,13 +117,17 @@ def triage_ticket(
     classification = classify_ticket(title, description)
 
     # Step 3: Generate resolution
-    client = _get_client()
-    prompt = RESOLUTION_PROMPT.format(
-        title=title,
-        description=description,
-        similar_tickets=_format_similar(similar),
-    )
-    resolution = _generate(client, prompt)
+    try:
+        client = _get_client()
+        prompt = RESOLUTION_PROMPT.format(
+            title=title,
+            description=description,
+            similar_tickets=_format_similar(similar),
+        )
+        resolution = _generate(client, prompt)
+    except Exception as exc:
+        logger.warning("LLM resolution failed, using template fallback: %s", str(exc)[:120])
+        resolution = _fallback_resolution(similar)
 
     return {
         "query": {"title": title, "description": description},
