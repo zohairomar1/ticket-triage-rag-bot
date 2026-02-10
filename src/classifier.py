@@ -39,10 +39,10 @@ Respond in valid JSON only, with these exact keys:
 
 def _get_model():
     """Lazy-load the Gemini generative model."""
-    import google.generativeai as genai
+    from google import genai
 
-    genai.configure(api_key=GEMINI_API_KEY)
-    return genai.GenerativeModel(GENERATION_MODEL)
+    client = genai.Client(api_key=GEMINI_API_KEY)
+    return client
 
 
 def classify_ticket(title: str, description: str) -> Dict:
@@ -54,14 +54,16 @@ def classify_ticket(title: str, description: str) -> Dict:
     dict
         Keys: category, priority, confidence, reasoning.
     """
-    model = _get_model()
+    client = _get_model()
     prompt = CLASSIFY_PROMPT.format(
         title=title,
         description=description,
         categories=", ".join(VALID_CATEGORIES),
         priorities=", ".join(VALID_PRIORITIES),
     )
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model=GENERATION_MODEL, contents=prompt
+    )
     text = response.text.strip()
 
     # Strip markdown code fences if present

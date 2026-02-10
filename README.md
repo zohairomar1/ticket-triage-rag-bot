@@ -34,9 +34,9 @@ New Ticket
 Category + Priority                               Suggested Resolution Approach
 ```
 
-1. **Embed** the ticket title + description using Gemini `text-embedding-004`
+1. **Embed** the ticket title + description using Gemini `gemini-embedding-001`
 2. **Retrieve** the top-k most similar tickets from the vector store (numpy cosine similarity)
-3. **Classify** category and priority using Gemini 1.5 Flash with structured output
+3. **Classify** category and priority using Gemini 2.0 Flash with structured output
 4. **Generate** a resolution suggestion using the retrieved tickets as context (RAG)
 
 ---
@@ -46,7 +46,7 @@ Category + Priority                               Suggested Resolution Approach
 | Component | Description |
 |-----------|-------------|
 | **Synthetic Dataset** | 100 realistic oil & gas support tickets across 5 categories |
-| **Embedding Module** | Gemini text-embedding-004 with numpy caching |
+| **Embedding Module** | Gemini gemini-embedding-001 with numpy caching |
 | **Vector Store** | Lightweight cosine similarity search (no external DB) |
 | **Classifier** | LLM-based category + priority classification with validation |
 | **RAG Pipeline** | End-to-end retrieval-augmented generation for resolution suggestions |
@@ -58,7 +58,7 @@ Category + Priority                               Suggested Resolution Approach
 ## Skills Demonstrated
 
 - **RAG Architecture**: Embedding-based retrieval + LLM generation pipeline
-- **Embeddings**: Gemini text-embedding-004 for semantic similarity
+- **Embeddings**: Gemini gemini-embedding-001 for semantic similarity
 - **Vector Search**: Cosine similarity with numpy (no chromadb/pinecone dependency)
 - **LLM Integration**: Structured prompting with JSON output parsing and validation
 - **Synthetic Data Generation**: Domain-realistic ticket corpus for oil & gas operations
@@ -140,8 +140,8 @@ ticket-triage-ragbot/
 | Category | Technology |
 |----------|-----------|
 | Language | Python 3.9+ |
-| LLM | Google Gemini 1.5 Flash |
-| Embeddings | Gemini text-embedding-004 (768 dimensions) |
+| LLM | Google Gemini 2.0 Flash |
+| Embeddings | Gemini gemini-embedding-001 (3072 dimensions) |
 | Vector Search | NumPy cosine similarity |
 | Dashboard | Streamlit |
 | Testing | Pytest (mocked API calls) |
@@ -152,8 +152,8 @@ No LangChain. No ChromaDB. No Pinecone. Just numpy and the Gemini SDK.
 
 ## Design Decisions
 
-1. **NumPy over vector DBs** -- 50 tickets fit in memory; cosine similarity in numpy is simple and transparent. No need for ChromaDB/Pinecone at this scale.
-2. **Gemini 1.5 Flash** -- Fast, cheap, and capable enough for structured classification. The same model handles both classification and resolution generation.
+1. **NumPy over vector DBs** -- 100 tickets fit in memory; cosine similarity in numpy is simple and transparent. No need for ChromaDB/Pinecone at this scale.
+2. **Gemini 2.0 Flash** -- Fast, cheap, and capable enough for structured classification. The same model handles both classification and resolution generation.
 3. **Structured JSON prompting** -- The classifier returns validated JSON with category, priority, confidence, and reasoning. Invalid responses are caught and defaulted.
 4. **Embedding caching** -- Embeddings are saved as `.npy` files so they only need to be generated once. Queries are embedded on-the-fly.
 5. **Mocked tests** -- All tests mock the Gemini API so they run without credentials and are deterministic.
@@ -164,7 +164,7 @@ No LangChain. No ChromaDB. No Pinecone. Just numpy and the Gemini SDK.
 
 - **RAG pattern**: "I built a retrieval-augmented generation pipeline from scratch: embed the query, retrieve similar documents via cosine similarity, then feed them to the LLM as context for generation. No LangChain -- I wanted to understand each step."
 
-- **Embeddings**: "I use Gemini's text-embedding-004 model (768 dimensions) and cache the vectors as numpy arrays. The vector store is just cosine similarity over a matrix -- at 50 tickets, a vector database would be overengineering."
+- **Embeddings**: "I use Gemini's gemini-embedding-001 model (3072 dimensions) and cache the vectors as numpy arrays. The vector store is just cosine similarity over a matrix -- at 100 tickets, a vector database would be overengineering."
 
 - **Classification**: "The classifier uses structured prompting to get JSON output from Gemini. I validate the response against allowed categories and priorities, with fallback defaults for malformed responses."
 

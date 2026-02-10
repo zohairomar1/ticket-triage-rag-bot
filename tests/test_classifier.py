@@ -22,12 +22,18 @@ def mock_gemini_response():
     return _make
 
 
+def _make_mock_client(response):
+    """Create a mock client that returns the given response from models.generate_content."""
+    mock_client = MagicMock()
+    mock_client.models.generate_content.return_value = response
+    return mock_client
+
+
 class TestClassifyTicket:
     def test_returns_expected_keys(self, mock_gemini_response):
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_gemini_response()
+        mock_client = _make_mock_client(mock_gemini_response())
 
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("ESP failed", "Pump tripped on well F-11")
             assert "category" in result
             assert "priority" in result
@@ -35,45 +41,39 @@ class TestClassifyTicket:
             assert "reasoning" in result
 
     def test_valid_category(self, mock_gemini_response):
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_gemini_response(
+        mock_client = _make_mock_client(mock_gemini_response(
             category="production_decline"
-        )
+        ))
 
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("Production drop", "Oil rate fell 30%")
             assert result["category"] in VALID_CATEGORIES
 
     def test_valid_priority(self, mock_gemini_response):
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_gemini_response(
+        mock_client = _make_mock_client(mock_gemini_response(
             priority="critical"
-        )
+        ))
 
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("H2S alarm", "Gas detected at wellpad")
             assert result["priority"] in VALID_PRIORITIES
 
     def test_handles_invalid_json(self):
         mock_response = MagicMock()
         mock_response.text = "This is not JSON"
+        mock_client = _make_mock_client(mock_response)
 
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_response
-
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("Test", "Test description")
             assert result["category"] == "unknown"
             assert result["confidence"] == "low"
 
-    def test_handles_markdown_code_fences(self, mock_gemini_response):
+    def test_handles_markdown_code_fences(self):
         mock_response = MagicMock()
         mock_response.text = '```json\n{"category": "safety_incident", "priority": "critical", "confidence": "high", "reasoning": "H2S is dangerous"}\n```'
+        mock_client = _make_mock_client(mock_response)
 
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_response
-
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("H2S alarm", "Gas detected")
             assert result["category"] == "safety_incident"
             assert result["priority"] == "critical"
@@ -86,11 +86,9 @@ class TestClassifyTicket:
             "confidence": "medium",
             "reasoning": "test",
         })
+        mock_client = _make_mock_client(mock_response)
 
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_response
-
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("Test", "Test")
             assert result["category"] == "unknown"
 
@@ -102,10 +100,8 @@ class TestClassifyTicket:
             "confidence": "medium",
             "reasoning": "test",
         })
+        mock_client = _make_mock_client(mock_response)
 
-        mock_model = MagicMock()
-        mock_model.generate_content.return_value = mock_response
-
-        with patch("src.classifier._get_model", return_value=mock_model):
+        with patch("src.classifier._get_model", return_value=mock_client):
             result = classify_ticket("Test", "Test")
             assert result["priority"] == "medium"

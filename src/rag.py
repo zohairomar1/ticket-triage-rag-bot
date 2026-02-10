@@ -33,10 +33,9 @@ Be specific, actionable, and concise (3-5 sentences). Reference the similar tick
 
 def _get_model():
     """Lazy-load the Gemini generative model."""
-    import google.generativeai as genai
+    from google import genai
 
-    genai.configure(api_key=GEMINI_API_KEY)
-    return genai.GenerativeModel(GENERATION_MODEL)
+    return genai.Client(api_key=GEMINI_API_KEY)
 
 
 def _format_similar(tickets: List[Dict]) -> str:
@@ -95,13 +94,15 @@ def triage_ticket(
     classification = classify_ticket(title, description)
 
     # Step 4: Generate resolution suggestion
-    model = _get_model()
+    client = _get_model()
     prompt = RESOLUTION_PROMPT.format(
         title=title,
         description=description,
         similar_tickets=_format_similar(similar),
     )
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model=GENERATION_MODEL, contents=prompt
+    )
 
     return {
         "query": {"title": title, "description": description},

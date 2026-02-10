@@ -9,36 +9,52 @@ from unittest.mock import patch, MagicMock
 
 class TestEmbedText:
     def test_returns_list_of_floats(self):
-        mock_result = {"embedding": [0.1, 0.2, 0.3] * 256}  # 768 dims
+        mock_embedding = MagicMock()
+        mock_embedding.values = [0.1, 0.2, 0.3] * 256  # 768 dims
+        mock_result = MagicMock()
+        mock_result.embeddings = [mock_embedding]
 
-        with patch("src.embeddings._get_embed_fn") as mock_fn:
-            mock_fn.return_value = MagicMock(return_value=mock_result)
+        mock_client = MagicMock()
+        mock_client.models.embed_content.return_value = mock_result
+
+        with patch("src.embeddings._get_client", return_value=mock_client):
             from src.embeddings import embed_text
 
             result = embed_text("test query")
             assert isinstance(result, list)
             assert len(result) == 768
 
-    def test_calls_embed_fn_with_text(self):
-        mock_result = {"embedding": [0.0] * 768}
+    def test_calls_client_with_text(self):
+        mock_embedding = MagicMock()
+        mock_embedding.values = [0.0] * 768
+        mock_result = MagicMock()
+        mock_result.embeddings = [mock_embedding]
 
-        with patch("src.embeddings._get_embed_fn") as mock_fn:
-            embed_fn = MagicMock(return_value=mock_result)
-            mock_fn.return_value = embed_fn
+        mock_client = MagicMock()
+        mock_client.models.embed_content.return_value = mock_result
+
+        with patch("src.embeddings._get_client", return_value=mock_client):
             from src.embeddings import embed_text
 
             embed_text("pump failure")
-            embed_fn.assert_called_once()
-            call_kwargs = embed_fn.call_args
+            mock_client.models.embed_content.assert_called_once()
+            call_kwargs = mock_client.models.embed_content.call_args
             assert "pump failure" in str(call_kwargs)
 
 
 class TestEmbedTexts:
     def test_returns_numpy_array(self):
-        mock_result = {"embedding": [[0.1] * 768, [0.2] * 768]}
+        mock_e1 = MagicMock()
+        mock_e1.values = [0.1] * 768
+        mock_e2 = MagicMock()
+        mock_e2.values = [0.2] * 768
+        mock_result = MagicMock()
+        mock_result.embeddings = [mock_e1, mock_e2]
 
-        with patch("src.embeddings._get_embed_fn") as mock_fn:
-            mock_fn.return_value = MagicMock(return_value=mock_result)
+        mock_client = MagicMock()
+        mock_client.models.embed_content.return_value = mock_result
+
+        with patch("src.embeddings._get_client", return_value=mock_client):
             from src.embeddings import embed_texts
 
             result = embed_texts(["text one", "text two"])
@@ -61,15 +77,22 @@ class TestEmbedTickets:
             with open(tickets_path, "w") as f:
                 json.dump(tickets, f)
 
-            mock_result = {"embedding": [[0.1] * 768, [0.2] * 768]}
+            mock_e1 = MagicMock()
+            mock_e1.values = [0.1] * 768
+            mock_e2 = MagicMock()
+            mock_e2.values = [0.2] * 768
+            mock_result = MagicMock()
+            mock_result.embeddings = [mock_e1, mock_e2]
+
+            mock_client = MagicMock()
+            mock_client.models.embed_content.return_value = mock_result
 
             with (
-                patch("src.embeddings._get_embed_fn") as mock_fn,
+                patch("src.embeddings._get_client", return_value=mock_client),
                 patch("src.embeddings.TICKETS_PATH", tickets_path),
                 patch("src.embeddings.EMBEDDINGS_PATH", embeddings_path),
                 patch("src.embeddings.TICKET_IDS_PATH", ids_path),
             ):
-                mock_fn.return_value = MagicMock(return_value=mock_result)
                 from src.embeddings import embed_tickets
 
                 embed_tickets()

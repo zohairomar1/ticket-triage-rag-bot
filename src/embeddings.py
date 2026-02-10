@@ -19,26 +19,25 @@ from .config import (
 )
 
 
-def _get_embed_fn():
-    """Lazy-load the Gemini embedding function."""
-    import google.generativeai as genai
+def _get_client():
+    """Lazy-load the Gemini client."""
+    from google import genai
 
-    genai.configure(api_key=GEMINI_API_KEY)
-    return genai.embed_content
+    return genai.Client(api_key=GEMINI_API_KEY)
 
 
 def embed_text(text: str) -> List[float]:
     """Embed a single text string using Gemini."""
-    embed_fn = _get_embed_fn()
-    result = embed_fn(model=EMBEDDING_MODEL, content=text)
-    return result["embedding"]
+    client = _get_client()
+    result = client.models.embed_content(model=EMBEDDING_MODEL, contents=text)
+    return result.embeddings[0].values
 
 
 def embed_texts(texts: List[str]) -> np.ndarray:
     """Embed multiple texts and return as a numpy array."""
-    embed_fn = _get_embed_fn()
-    result = embed_fn(model=EMBEDDING_MODEL, content=texts)
-    return np.array(result["embedding"])
+    client = _get_client()
+    result = client.models.embed_content(model=EMBEDDING_MODEL, contents=texts)
+    return np.array([e.values for e in result.embeddings])
 
 
 def embed_tickets():

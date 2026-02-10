@@ -15,9 +15,9 @@ TICKETS_PATH = DATA_DIR / "tickets.json"
 EMBEDDINGS_PATH = DATA_DIR / "embeddings.npy"
 TICKET_IDS_PATH = DATA_DIR / "ticket_ids.json"
 
-EMBEDDING_MODEL = "models/text-embedding-004"
-GENERATION_MODEL = "gemini-1.5-flash"
+EMBEDDING_MODEL = "gemini-embedding-001"
+GENERATION_MODEL = "gemini-2.0-flash"
 
 # Vector search defaults
 DEFAULT_TOP_K = 5
-EMBEDDING_DIMENSION = 768
+EMBEDDING_DIMENSION = 3072

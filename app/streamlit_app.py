@@ -64,8 +64,8 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("**Tech Stack:**")
-    st.text("Gemini 1.5 Flash")
-    st.text("text-embedding-004")
+    st.text("Gemini 2.0 Flash")
+    st.text("gemini-embedding-001")
     st.text("NumPy cosine similarity")
     st.text("No external vector DB")
 
