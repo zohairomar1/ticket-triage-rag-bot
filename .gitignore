@@ -11,6 +11,7 @@ __pycache__/
 # Cached embeddings (regenerate with python -m src.embeddings)
 data/embeddings.npy
 data/ticket_ids.json
+data/embedding_cache/
 
 # IDE
 .idea/

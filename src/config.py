@@ -21,3 +21,10 @@ GENERATION_MODEL = "gemini-2.0-flash"
 # Vector search defaults
 DEFAULT_TOP_K = 5
 EMBEDDING_DIMENSION = 3072
+
+# Embedding cache
+EMBEDDING_CACHE_DIR = DATA_DIR / "embedding_cache"
+
+# Rate limiting (Gemini free tier: 100 RPM for embeddings)
+EMBEDDING_RPM_LIMIT = int(os.getenv("EMBEDDING_RPM_LIMIT", "90"))  # stay under 100
+EMBEDDING_BATCH_SIZE = int(os.getenv("EMBEDDING_BATCH_SIZE", "20"))
